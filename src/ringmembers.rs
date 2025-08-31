@@ -22,6 +22,9 @@ impl Ring {
     pub fn get_index_for_id(&self, id: String) -> Option<usize> {
         return self.ordered_ids.iter().position(|r| r == &id).into();
     }
+    pub fn get_id_for_index(&self, index: usize) -> Option<&RingMember> {
+        return self.members.get(&self.ordered_ids[index]);
+    }
     pub fn next_id(&self, id: String) -> Option<&RingMember> {
         if let Some(index) = self.get_index_for_id(id) {
             return Some(self.next(index));

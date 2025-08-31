@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" /> 
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <meta name="copyright" content="Copyright 2025, Connor Duncan" />
+    <style>
+    body {{
+      text-align: center;
+    }}
+    h1{{
+    min-width:100vw;
+    }}
+    a:link{{
+      color: #83a598;
+    }}
+    @media(prefers-color-scheme: dark) {{
+    :root{{
+    background-color: #282828;
+    color:#fbf1c7;
+    }}
+    }}
+
+    @media (prefers-color-scheme: light){{
+      :root{{
+      background-color: #1d2021;
+      color: #fbf1c7;
+      }}
+    a:link {{
+      color: #83a598;
+    }}
+    }}
+    </style>
+    <title> {title}</title>
+    
+  </head>
+  <body>
+    <h1> {title}</h1>
+	{list}
+    <div><a href="/random">random</a><div>
+  </body>
+</html>

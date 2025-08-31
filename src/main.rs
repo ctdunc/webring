@@ -1,15 +1,15 @@
 mod ringmembers;
 mod templates;
+use crate::ringmembers::{Ring, RingMember};
+use crate::templates::homepage;
 use clap::Parser;
+use rand::{self, Rng};
 use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
 use std::fs::read_to_string;
 use std::path::Path;
 use tiny_http::{Header, Method, Response, Server, ServerConfig};
 use toml;
-
-use crate::ringmembers::{Ring, RingMember};
-use crate::templates::homepage;
 #[derive(Parser, Debug)]
 #[command(version, about, long_about = None)]
 struct Args {
@@ -75,12 +75,6 @@ fn main() {
                             redirect_to(&String::from("/"))
                         }
                     }
-                    /*
-                    Response::from_string(format!(
-                        "next for id: {:?}",
-                        id_for_params(&request.url()[pos + 1..])
-                    ))
-                    .with_status_code(200),*/
                     "/previous" => {
                         if let Some(id) = id_for_params(&request.url()[pos + 1..]) {
                             if let Some(member) = ring.prev_id(id) {
@@ -89,6 +83,15 @@ fn main() {
                             } else {
                                 redirect_to(&String::from("/"))
                             }
+                        } else {
+                            redirect_to(&String::from("/"))
+                        }
+                    }
+                    "/random" => {
+                        let mut rng = rand::rng();
+                        let index = rng.random_range(0..ring.members.len());
+                        if let Some(member) = ring.get_id_for_index(index) {
+                            redirect_to(&member.url)
                         } else {
                             redirect_to(&String::from("/"))
                         }
