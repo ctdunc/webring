@@ -1,3 +1,7 @@
+port = 8080
+ip_addr = "127.0.0.1"
+title = "Commutative Webring"
+
 [members.connorduncan]
 title = "Connor's Blog"
 author = "Connor Duncan"

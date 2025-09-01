@@ -1,5 +1,4 @@
-use crate::{RingMember, ringmembers::Ring};
-use maud::{DOCTYPE, Markup, html};
+use crate::RingMember;
 
 use std::collections::HashMap;
 pub fn member_entry(member: &RingMember) -> String {
@@ -9,15 +8,11 @@ pub fn member_entry(member: &RingMember) -> String {
     );
 }
 
-pub fn homepage(members: &HashMap<String, RingMember>) -> String {
+pub fn homepage(members: &HashMap<String, RingMember>, title: &String) -> String {
     let mut list = String::from("<ul>");
     for (_, member) in members {
         list.push_str(member_entry(&member).as_str());
     }
     list.push_str("</body></html>");
-    return format!(
-        include_str!("../template.html"),
-        title = "Commutative Webring",
-        list = list
-    );
+    return format!(include_str!("../template.html"), title = title, list = list);
 }

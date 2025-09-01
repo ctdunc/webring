@@ -7,6 +7,7 @@ use rand::{self, Rng};
 use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
 use std::fs::read_to_string;
+use std::net::Ipv4Addr;
 use std::path::Path;
 use tiny_http::{Header, Method, Response, Server, ServerConfig};
 use toml;
@@ -18,11 +19,16 @@ struct Args {
 }
 #[derive(Serialize, Deserialize, Debug)]
 struct Config {
+    title: String,
     members: HashMap<String, RingMember>,
     #[serde(default = "default_port")]
     port: u16,
+    #[serde(default = "default_addr")]
+    ip_addr: Ipv4Addr,
 }
-
+fn default_addr() -> Ipv4Addr {
+    return Ipv4Addr::new(127, 0, 0, 0);
+}
 fn default_port() -> u16 {
     return 8080;
 }
@@ -55,7 +61,7 @@ fn main() {
     .unwrap();
 
     let ring = Ring::from_members(config.members);
-    let server = Server::http(format!("127.0.0.0:{}", config.port)).unwrap();
+    let server = Server::http(format!("{}:{}", config.ip_addr, config.port)).unwrap();
 
     for request in server.incoming_requests() {
         let response = match request.method() {
@@ -96,7 +102,7 @@ fn main() {
                             redirect_to(&String::from("/"))
                         }
                     }
-                    _ => Response::from_string(homepage(&ring.members))
+                    _ => Response::from_string(homepage(&ring.members, &config.title))
                         .with_status_code(200)
                         .with_header("content-type: text/html".parse::<Header>().unwrap()),
                 }
