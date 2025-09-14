@@ -39,12 +39,12 @@ impl Ring {
     }
     pub fn next(&self, index: usize) -> &RingMember {
         let len = self.ordered_ids.len();
-        let next_id = self.ordered_ids[((index + 1) % len + len) % len].clone();
+        let next_id = self.ordered_ids[(index + len + 1) % len].clone();
         return &self.members[&next_id];
     }
     pub fn prev(&self, index: usize) -> &RingMember {
         let len = self.ordered_ids.len();
-        let next_id = self.ordered_ids[((index - 1) % len + len) % len].clone();
+        let next_id = self.ordered_ids[(index + len - 1) % len].clone();
         return &self.members[&next_id];
     }
 }
