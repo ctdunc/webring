@@ -32,10 +32,12 @@ fn default_addr() -> Ipv4Addr {
 fn default_port() -> u16 {
     return 8080;
 }
-fn id_for_params(params: &str) -> Option<String> {
-    for param in params.split("&") {
-        if param.starts_with("id=") {
-            return Some(param[3..].into());
+fn id_for_params(p: Option<&str>) -> Option<String> {
+    if let Some(params) = p {
+        for param in params.split("&") {
+            if param.starts_with("id=") {
+                return Some(param[3..].into());
+            }
         }
     }
     return None;
@@ -68,9 +70,16 @@ fn main() {
             Method::Get => {
                 let pos = request.url().find("?").unwrap_or(request.url().len());
                 let route = &request.url()[..pos];
+                let params = {
+                    if request.url().len() == pos {
+                        None
+                    } else {
+                        Some(&request.url()[pos + 1..])
+                    }
+                };
                 match route {
                     "/next" => {
-                        if let Some(id) = id_for_params(&request.url()[pos + 1..]) {
+                        if let Some(id) = id_for_params(params) {
                             if let Some(member) = ring.next_id(id) {
                                 let url = &member.url;
                                 redirect_to(url)
@@ -82,7 +91,7 @@ fn main() {
                         }
                     }
                     "/previous" => {
-                        if let Some(id) = id_for_params(&request.url()[pos + 1..]) {
+                        if let Some(id) = id_for_params(params) {
                             if let Some(member) = ring.prev_id(id) {
                                 let url = &member.url;
                                 redirect_to(url)
@@ -110,6 +119,6 @@ fn main() {
             _ => Response::from_string("").with_status_code(400),
         };
 
-        request.respond(response);
+        let _ = request.respond(response);
     }
 }
